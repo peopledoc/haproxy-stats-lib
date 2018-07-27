@@ -1,0 +1,8 @@
+loadbalancers:
+  - name: prod
+    fqdn: haproxy-stats.example.com
+  - haproxy-stats.example.net
+
+proxies:
+  - app1
+  - name: app3
