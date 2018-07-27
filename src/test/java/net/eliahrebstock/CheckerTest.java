@@ -15,7 +15,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * Unit test for simple Checker.
+ * Unit test for the Checker.
  */
 class CheckerTest {
 

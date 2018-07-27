@@ -2,6 +2,9 @@ package net.eliahrebstock.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+/**
+ * POJO representing part of config.yml dedicated to loadbalancer
+ */
 public class LoadBalancerConfig {
 
     @JsonProperty("name")

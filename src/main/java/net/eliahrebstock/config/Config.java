@@ -7,6 +7,9 @@ import fr.novapost.lib.yaml.exception.YamlParseException;
 import java.io.File;
 import java.util.List;
 
+/**
+ * POJO representing config.yml file
+ */
 public class Config {
 
     @JsonProperty("loadbalancers")

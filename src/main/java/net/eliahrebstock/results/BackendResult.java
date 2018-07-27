@@ -2,8 +2,9 @@ package net.eliahrebstock.results;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
-import java.util.Date;
-
+/**
+ * Result generated for each backend on HAProxy
+ */
 public class BackendResult {
 
     @JsonProperty

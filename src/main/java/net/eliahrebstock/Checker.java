@@ -19,6 +19,10 @@ import java.util.*;
 // 3. Fetch data
 // 4. Interpret it
 // 5. Send back result as JSON
+
+/**
+ * Checker used to poll statistics from HAProxy and converting part of it to JSON
+ */
 public class Checker
 {
     private static Iterable<CSVRecord> getRecords(InputStream is) throws IOException {

@@ -3,6 +3,10 @@ package net.eliahrebstock;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * Not used
+ */
+@Deprecated
 public class Result {
 
 

@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * Unit test for simple Checker.
+ * Unit test on loading configuration file.
  */
 class ConfigTest {
 
@@ -33,8 +33,6 @@ class ConfigTest {
     @Test
     void invalidParseTest() {
         File configFile = ResourceLoader.getFile("invalid_config.yml");
-        assertThrows(YamlParseException.class, () -> {
-            Config.loadFromFile(configFile);
-        });
+        assertThrows(YamlParseException.class, () -> Config.loadFromFile(configFile));
     }
 }

@@ -9,7 +9,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Base64;
 
-public class StatsFetcher {
+/**
+ * Utility class to fetch stats from a HAProxy loadbalancer
+ * given the url to access it. HAProxy must be configured to have an accessible
+ * stats page.
+ */
+class StatsFetcher {
 
     private URL statsURL;
 
@@ -27,7 +32,7 @@ public class StatsFetcher {
         this.password = password;
     }
 
-    public InputStream fetch() throws IOException {
+    InputStream fetch() throws IOException {
         HttpURLConnection con = (HttpURLConnection) statsURL.openConnection();
         con.setRequestMethod("GET");
         con.setConnectTimeout(5000);

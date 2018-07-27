@@ -12,6 +12,9 @@ import java.util.ArrayList;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
+/**
+ * Unit test for constructing a HAProxyRecord object from a CSV stream
+ */
 class HAProxyRecordTest {
 
     @Test
