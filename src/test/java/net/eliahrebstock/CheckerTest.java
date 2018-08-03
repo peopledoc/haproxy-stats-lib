@@ -14,7 +14,8 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * Unit test for the Checker.
+ * Unit test for the Checker. These tests need the main_config.yml to be correct
+ * and to have a proper connection to the load balancer.
  */
 class CheckerTest {
     @Test
@@ -40,6 +41,40 @@ class CheckerTest {
         ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(results);
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
+
+    @Test
+    void testRun() {
+        Config mainConfig = null;
+        try {
+            mainConfig = Config.loadFromFile(ResourceLoader.getFile("main_config.yml"));
+        } catch (YamlParseException e) {
+            e.printStackTrace();
+            fail();
+        }
+
+        Checker checker = new Checker(mainConfig);
+        Thread t = new Thread(checker);
+        t.run();
+
+        try {
+            t.join();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+            fail();
+        }
+
+        if (checker.getResults() == null) {
+            fail();
+        }
+
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(checker.getResults());
         } catch (IOException e) {
             e.printStackTrace();
             fail();

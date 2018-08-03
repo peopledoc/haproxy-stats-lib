@@ -23,9 +23,11 @@ import java.util.*;
 /**
  * Checker used to poll statistics from HAProxy and converting part of it to JSON
  */
-public class Checker
+public class Checker implements Runnable
 {
     private Config config;
+
+    private Map<String, List<BackendResult>> results;
 
     public Checker(Config config) {
         this.config = config;
@@ -69,6 +71,7 @@ public class Checker
             }
             results.put(lbConfig.getEnvName(), resultList);
         }
+        this.results = results;
         return results;
     }
 
@@ -80,5 +83,18 @@ public class Checker
 
         ObjectMapper mapper = new ObjectMapper();
         mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(results);
+    }
+
+    public Map<String, List<BackendResult>> getResults() {
+        return results;
+    }
+
+    @Override
+    public void run() {
+        try {
+            check();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
