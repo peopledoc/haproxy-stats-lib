@@ -1,0 +1,9 @@
+loadbalancers:
+  - name: integration
+    fqdn: http://localhost:1936
+    username: integration
+    password: integration
+
+proxies:
+  - app1
+  - app2
