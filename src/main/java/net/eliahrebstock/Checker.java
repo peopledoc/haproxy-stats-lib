@@ -25,6 +25,12 @@ import java.util.*;
  */
 public class Checker
 {
+    private Config config;
+
+    public Checker(Config config) {
+        this.config = config;
+    }
+
     private static Iterable<CSVRecord> getRecords(InputStream is) throws IOException {
         long test = is.skip(2); // skip first #
         if (test < 2) {
@@ -35,14 +41,12 @@ public class Checker
         return CSVFormat.RFC4180.withFirstRecordAsHeader().parse(in);
     }
 
-    public static void main( String[] args ) throws YamlParseException, IOException {
-        Config mainConfig = Config.loadFromFile(new File("config.yml"));
-
-        List<String> proxies = Arrays.asList(mainConfig.getProxies());
+    public Map<String, List<BackendResult>> check() throws IOException {
+        List<String> proxies = Arrays.asList(config.getProxies());
 
         Map<String, List<BackendResult>> results = new HashMap<>();
 
-        for(LoadBalancerConfig lbConfig : mainConfig.getLoadBalancerConfigs()) {
+        for(LoadBalancerConfig lbConfig : config.getLoadBalancerConfigs()) {
             StatsFetcher statsFetcher = new StatsFetcher(lbConfig);
             InputStream is = statsFetcher.fetch();
             Iterable<CSVRecord> records = getRecords(is);
@@ -65,9 +69,16 @@ public class Checker
             }
             results.put(lbConfig.getEnvName(), resultList);
         }
+        return results;
+    }
+
+    public static void main( String[] args ) throws IOException, YamlParseException {
+        Config mainConfig = Config.loadFromFile(new File("config.yml"));
+        Checker checker = new Checker(mainConfig);
+
+        Map<String, List<BackendResult>> results = checker.check();
+
         ObjectMapper mapper = new ObjectMapper();
-
         mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(results);
-
     }
 }
