@@ -26,8 +26,8 @@ class StatsFetcher {
         this(lbConfig.getFqdn(), lbConfig.getUsername(), lbConfig.getPassword());
     }
 
-    private StatsFetcher(String fqdn, String username, String password) throws MalformedURLException {
-        statsURL = new URL(fqdn + "/;csv");
+    private StatsFetcher(String baseURL, String username, String password) throws MalformedURLException {
+        statsURL = new URL(baseURL + "/;csv");
         this.username = username;
         this.password = password;
     }

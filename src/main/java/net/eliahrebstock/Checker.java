@@ -36,7 +36,7 @@ public class Checker implements Runnable
     private static Iterable<CSVRecord> getRecords(InputStream is) throws IOException {
         long test = is.skip(2); // skip first #
         if (test < 2) {
-            throw new IOException();
+            throw new IllegalArgumentException();
         }
 
         InputStreamReader in = new InputStreamReader(is);
