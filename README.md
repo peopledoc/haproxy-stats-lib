@@ -11,9 +11,9 @@ formatted JSON file to use in another applications.
 Key Features
 ------------
 - Configurable with a YAML file.
-- Still WIP
+- Give back a JSON with some data in it.
 
-
+<!--
 Team
 ----
 [Team](https://github.com/peopledoc/tribe-java/blob/master/documentation/applications.md)
@@ -22,10 +22,10 @@ Team
 Contributing
 ------------
 [Contributing](https://github.com/peopledoc/tribe-java/blob/master/documentation/contribution.md)
-
+-->
 
 License
 -------
 
-(c) PeopleDoc Inc, 2018.
+TODO
 
