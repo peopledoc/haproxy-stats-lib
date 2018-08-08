@@ -33,4 +33,8 @@ public class Config {
     public String[] getProxies() {
         return proxies;
     }
+
+    public int getCachePeriod() {
+        return cachePeriod;
+    }
 }

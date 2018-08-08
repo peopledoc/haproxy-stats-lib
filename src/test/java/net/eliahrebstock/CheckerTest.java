@@ -30,14 +30,7 @@ class CheckerTest {
 
         Checker checker = new Checker(mainConfig);
 
-        Map<String, List<BackendResult>> results = null;
-        try {
-            results = checker.check();
-        } catch (IOException e) {
-            e.printStackTrace();
-            fail();
-        }
-
+        Map<String, List<BackendResult>> results = checker.check();
         ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(results);
@@ -68,13 +61,13 @@ class CheckerTest {
             fail();
         }
 
-        if (checker.getResults() == null) {
+        if (checker.getLastResults() == null) {
             fail();
         }
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(checker.getResults());
+            mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(checker.getLastResults());
         } catch (IOException e) {
             e.printStackTrace();
             fail();
