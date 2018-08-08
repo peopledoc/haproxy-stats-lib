@@ -1,6 +1,6 @@
 loadbalancers:
   - name: prod
-    fqdn: haproxy-stats.example.com
+    url: haproxy-stats.example.com
 
 proxies:
   - app1

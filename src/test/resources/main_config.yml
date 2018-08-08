@@ -1,6 +1,6 @@
 loadbalancers:
   - name: integration
-    fqdn: http://localhost:1936
+    url: http://localhost:1936
     username: integration
     password: integration
 

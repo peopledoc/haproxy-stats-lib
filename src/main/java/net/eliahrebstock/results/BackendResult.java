@@ -1,32 +1,81 @@
 package net.eliahrebstock.results;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import net.eliahrebstock.HAProxyRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import javax.annotation.Nullable;
 
 /**
  * Result generated for each backend on HAProxy
  */
 public class BackendResult {
 
+    @JsonIgnore
+    private static Logger logger = LoggerFactory.getLogger(BackendResult.class);
+
+    /**
+     * Name of a proxy (which contains multiple backends).
+     */
     @JsonProperty
     private String name;
 
+    /**
+     * Name of the backend in the proxy.
+     */
     @JsonProperty
     private String backend;
 
+    /**
+     * Weight associated with the backend.
+     */
     @JsonProperty
     private int weight;
 
+    /**
+     * If the backend is up for HAProxy.
+     */
     @JsonProperty
     private Boolean status;
 
-    @JsonProperty
-    private String HCstatus;
+    /**
+     * Detailed HAProxy backend status information
+     */
+    @JsonProperty(value = "hc_status")
+    private String healthCheckStatus;
 
-    public BackendResult(String name, String backend, int weight, Boolean status, String HCstatus) {
-        this.name = name;
-        this.backend = backend;
-        this.weight = weight;
-        this.status = status;
-        this.HCstatus = HCstatus;
+    public BackendResult(HAProxyRecord record) {
+        HAProxyRecord.HCStatus hcStatus = record.getCheckStatus();
+        boolean recordStatus = false;
+        String recordStatusString = "";
+        if (hcStatus != null) {
+            recordStatusString = hcStatus.toString();
+            recordStatus = hcStatus.getStatus();
+        }
+        this.name = record.getProxyName();
+        this.backend = record.getServiceName();
+        this.weight = record.getWeight();
+        this.status = recordStatus;
+        this.healthCheckStatus = recordStatusString;
+    }
+
+    /**
+     * Get backend result as a JSON string.
+     * @return String JSON backend result
+     */
+    @Nullable
+    @JsonIgnore
+    public String getAsJSON() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(this);
+        } catch (JsonProcessingException e) {
+            logger.error(e.getLocalizedMessage());
+            return null;
+        }
     }
 }

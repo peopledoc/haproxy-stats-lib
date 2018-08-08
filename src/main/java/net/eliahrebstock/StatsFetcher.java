@@ -23,7 +23,7 @@ class StatsFetcher {
     private String password;
 
     StatsFetcher(LoadBalancerConfig lbConfig) throws MalformedURLException {
-        this(lbConfig.getFqdn(), lbConfig.getUsername(), lbConfig.getPassword());
+        this(lbConfig.getUrl(), lbConfig.getUsername(), lbConfig.getPassword());
     }
 
     private StatsFetcher(String baseURL, String username, String password) throws MalformedURLException {
@@ -37,8 +37,8 @@ class StatsFetcher {
         con.setRequestMethod("GET");
         con.setConnectTimeout(5000);
         con.setReadTimeout(5000);
-        String user_pass = username + ":" + password;
-        byte[] encoded = Base64.getEncoder().encode(user_pass.getBytes());
+        String userPassword = username + ":" + password;
+        byte[] encoded = Base64.getEncoder().encode(userPassword.getBytes());
         String encodedString = new String(encoded);
         con.setRequestProperty("Authorization", "Basic " + encodedString);
         int responseCode = con.getResponseCode();

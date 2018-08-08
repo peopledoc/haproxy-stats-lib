@@ -1,6 +1,6 @@
 package net.eliahrebstock;
 
-import com.fasterxml.jackson.core.JsonGenerator;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
@@ -13,6 +13,7 @@ import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -27,7 +28,7 @@ import java.util.concurrent.TimeUnit;
 public class Checker implements Runnable {
     private Config config;
 
-    private Logger logger = LoggerFactory.getLogger(Checker.class);
+    private static Logger logger = LoggerFactory.getLogger(Checker.class);
 
     private Map<String, List<BackendResult>> results;
 
@@ -35,12 +36,31 @@ public class Checker implements Runnable {
 
     private UUID key;
 
+    /**
+     * Construct a new Checker with the given configuration file.
+     * @param configFile File Main configuration file
+     * @throws YamlParseException if the config file does not follow the format
+     */
+    public Checker(File configFile) throws YamlParseException {
+        this(Config.loadFromFile(configFile));
+    }
+
+    /**
+     * Construct a new Checker with the given configuration.
+     * @param config Config Main configuration
+     */
     public Checker(Config config) {
         this.config = config;
         key = UUID.randomUUID();
         cache = CacheBuilder.newBuilder().expireAfterWrite(config.getCachePeriod(), TimeUnit.SECONDS).build();
     }
 
+    /**
+     * Parse stats CSV results from HAProxy
+     * @param is InputStream of the stats CSV
+     * @return Iterable of CSVRecord
+     * @throws IOException if the InputStream is empty.
+     */
     private static Iterable<CSVRecord> getRecords(InputStream is) throws IOException {
         long test = is.skip(2); // skip first #
         if (test < 2) {
@@ -51,6 +71,11 @@ public class Checker implements Runnable {
         return CSVFormat.RFC4180.withFirstRecordAsHeader().parse(in);
     }
 
+    /**
+     * Check HAProxy stats and return a Map of results.
+     * @return Map<String, List<BackendResult>> Map between environnment names and List of backends results.
+     * @throws IOException if a connexion problem occurs.
+     */
     private Map<String, List<BackendResult>> doCheck() throws IOException {
         List<String> proxies = Arrays.asList(config.getProxies());
 
@@ -64,17 +89,7 @@ public class Checker implements Runnable {
             for (CSVRecord record : records) {
                 HAProxyRecord lbRecord = new HAProxyRecord(record);
                 if (lbRecord.getType() == HAProxyRecord.ProxyType.SERVER && proxies.contains(lbRecord.getProxyName())) {
-                    HAProxyRecord.HCStatus hcStatus = lbRecord.getCheckStatus();
-                    boolean status = false;
-                    String statusString = "";
-                    if (hcStatus != null) {
-                        statusString = hcStatus.toString();
-                        status = hcStatus.getStatus();
-                    }
-
-                    BackendResult result = new BackendResult(lbRecord.getProxyName(), lbRecord.getServiceName(),
-                            lbRecord.getWeight(), status, statusString);
-                    resultList.add(result);
+                    resultList.add(new BackendResult(lbRecord));
                 }
             }
             resultsMap.put(lbConfig.getEnvName(), resultList);
@@ -83,7 +98,11 @@ public class Checker implements Runnable {
         return resultsMap;
     }
 
-
+    /**
+     * Return cached results from HAProxy or trigger a new check if the cache is expired.
+     * @return Map<String, List<BackendResult>> the results
+     */
+    @Nullable
     public Map<String, List<BackendResult>> check() {
         try {
             return cache.get(key, this::doCheck);
@@ -93,22 +112,51 @@ public class Checker implements Runnable {
         }
     }
 
-    public static void main(String[] args) throws IOException, YamlParseException {
-        Config mainConfig = Config.loadFromFile(new File("config.yml"));
-        Checker checker = new Checker(mainConfig);
-
-        Map<String, List<BackendResult>> results = checker.check();
-
-        ObjectMapper mapper = new ObjectMapper();
-        try (JsonGenerator generator = mapper.getFactory().createGenerator(System.out)) {
-            generator.useDefaultPrettyPrinter().writeObject(results);
+    /**
+     * Main debug function. Log JSON results from given file on command line.
+     * @param args String[] command line options. This function assume the first argument is the path to a config file.
+     * @throws YamlParseException if the config file doesn't follow the YAML syntax of {@link Config} class.
+     */
+    public static void main(String[] args) throws YamlParseException {
+        if (args.length < 1) {
+            logger.error("Need a configuration file path.");
+            return;
         }
+
+        Checker checker = new Checker(new File(args[0]));
+
+        checker.check();
+        logger.info(checker.getLastResultsAsJSON());
     }
 
+    /**
+     * Return last fetched results.
+     * Does not trigger a new fetch.
+     * @return Map<String, List<BackendResult>> results
+     */
     public Map<String, List<BackendResult>> getLastResults() {
         return results;
     }
 
+    /**
+     * Return last fetched results as a JSON String.
+     * Does not trigger a new fetch.
+     * @return String JSON results.
+     */
+    @Nullable
+    public String getLastResultsAsJSON() {
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            return mapper.writeValueAsString(results);
+        } catch (JsonProcessingException e) {
+            logger.error(e.getLocalizedMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Run a new Check as a thread.
+     */
     @Override
     public void run() {
         check();

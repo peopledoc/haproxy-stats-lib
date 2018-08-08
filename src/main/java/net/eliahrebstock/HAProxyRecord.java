@@ -2,6 +2,8 @@ package net.eliahrebstock;
 
 
 import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.lang.reflect.Field;
 import java.time.Duration;
@@ -11,6 +13,8 @@ import java.time.Duration;
  */
 public class HAProxyRecord {
 
+    private static Logger logger = LoggerFactory.getLogger(HAProxyRecord.class);
+
     enum ProxyType {
         FRONTEND,
         BACKEND,
@@ -18,7 +22,7 @@ public class HAProxyRecord {
         LISTENER
     }
 
-    enum HCStatus {
+    public enum HCStatus {
         UNKNOWN,
         INITIALIZING,
         SOCKET_ERROR,
@@ -181,25 +185,25 @@ public class HAProxyRecord {
     private Duration checkDuration;
 
     /* hrsp_1xx */
-    private int HTTPResponse1xx;
+    private int httpResponse1xx;
 
     /* hrsp_2xx */
-    private int HTTPResponse2xx;
+    private int httpResponse2xx;
 
     /* hrsp_3xx */
-    private int HTTPResponse3xx;
+    private int httpResponse3xx;
 
     /* hrsp_4xx */
-    private int HTTPResponse4xx;
+    private int httpResponse4xx;
 
     /* hrsp_5xx */
-    private int HTTPResponse5xx;
+    private int httpResponse5xx;
 
     /* hrsp_other */
-    private int HTTPResponseOther;
+    private int httpResponseOther;
 
     /* hanafail */
-    private String HCDetails;
+    private String healthcheckDetails;
 
     /* req_rate */
     private int requestsInLastSecond;
@@ -259,10 +263,10 @@ public class HAProxyRecord {
     private Duration agentCheckDuration;
 
     /* check_desc */
-    private String HCDescription;
+    private String healthcheckDescription;
 
     /* agent_desc */
-    private String AgentCheckDescription;
+    private String agentCheckDescription;
 
     /* check_rise */
     private int checkRiseParameter;
@@ -312,7 +316,7 @@ public class HAProxyRecord {
     /* dses */
     private int deniedRequestsTCPSession;
 
-    private ProxyType getProxyTypeFromString(String proxyType) throws IllegalArgumentException {
+    private ProxyType getProxyTypeFromString(String proxyType) {
         int proxyTypeNumber = Integer.parseInt(proxyType);
         switch (proxyTypeNumber) {
             case 0:
@@ -328,7 +332,7 @@ public class HAProxyRecord {
         }
     }
 
-    private HCStatus getHCStatusFromString(String checkStatus) throws IllegalArgumentException {
+    private HCStatus getHCStatusFromString(String checkStatus) {
         if (checkStatus.contains("*")) {
             checkStatus = checkStatus.substring(2);
         }
@@ -369,7 +373,7 @@ public class HAProxyRecord {
         }
     }
 
-    private AgentStatus getAgentStatusFromString(String agentStatus) throws IllegalArgumentException {
+    private AgentStatus getAgentStatusFromString(String agentStatus) {
         switch (agentStatus) {
             case "UNK":
                 return AgentStatus.UNKNOWN;
@@ -394,7 +398,7 @@ public class HAProxyRecord {
         }
     }
 
-    private ProxyMode getProxyModeFromString(String proxyMode) throws IllegalArgumentException {
+    private ProxyMode getProxyModeFromString(String proxyMode) {
         switch (proxyMode) {
             case "http":
                 return ProxyMode.HTTP;
@@ -460,13 +464,13 @@ public class HAProxyRecord {
         checkStatus = getHCStatusFromString(record.get("check_status"));
         checkCode = parseIntOrZero(record.get("check_code"));
         checkDuration = Duration.ofMillis(parseIntOrZero(record.get("check_duration")));
-        HTTPResponse1xx = parseIntOrZero(record.get("hrsp_1xx"));
-        HTTPResponse2xx = parseIntOrZero(record.get("hrsp_2xx"));
-        HTTPResponse3xx = parseIntOrZero(record.get("hrsp_3xx"));
-        HTTPResponse4xx = parseIntOrZero(record.get("hrsp_4xx"));
-        HTTPResponse5xx = parseIntOrZero(record.get("hrsp_5xx"));
-        HTTPResponseOther = parseIntOrZero(record.get("hrsp_other"));
-        HCDetails = record.get("hanafail");
+        httpResponse1xx = parseIntOrZero(record.get("hrsp_1xx"));
+        httpResponse2xx = parseIntOrZero(record.get("hrsp_2xx"));
+        httpResponse3xx = parseIntOrZero(record.get("hrsp_3xx"));
+        httpResponse4xx = parseIntOrZero(record.get("hrsp_4xx"));
+        httpResponse5xx = parseIntOrZero(record.get("hrsp_5xx"));
+        httpResponseOther = parseIntOrZero(record.get("hrsp_other"));
+        healthcheckDetails = record.get("hanafail");
         requestsInLastSecond = parseIntOrZero(record.get("req_rate"));
         requestsPerSecondLimit = parseIntOrZero(record.get("req_rate_max"));
         maxRequestsPerSecond = parseIntOrZero(record.get("req_tot"));
@@ -486,8 +490,8 @@ public class HAProxyRecord {
         agentStatus = getAgentStatusFromString(record.get("agent_status"));
         agentCode = parseIntOrZero(record.get("agent_code"));
         agentCheckDuration = Duration.ofMillis(parseIntOrZero(record.get("agent_duration")));
-        HCDescription = record.get("check_desc");
-        AgentCheckDescription = record.get("agent_desc");
+        healthcheckDescription = record.get("check_desc");
+        agentCheckDescription = record.get("agent_desc");
         checkRiseParameter = parseIntOrZero(record.get("check_rise"));
         checkFallParameter = parseIntOrZero(record.get("check_fall"));
         checkHealthResult = parseIntOrZero(record.get("check_health"));
@@ -662,32 +666,32 @@ public class HAProxyRecord {
         return checkDuration;
     }
 
-    public int getHTTPResponse1xx() {
-        return HTTPResponse1xx;
+    public int getHttpResponse1xx() {
+        return httpResponse1xx;
     }
 
-    public int getHTTPResponse2xx() {
-        return HTTPResponse2xx;
+    public int getHttpResponse2xx() {
+        return httpResponse2xx;
     }
 
-    public int getHTTPResponse3xx() {
-        return HTTPResponse3xx;
+    public int getHttpResponse3xx() {
+        return httpResponse3xx;
     }
 
-    public int getHTTPResponse4xx() {
-        return HTTPResponse4xx;
+    public int getHttpResponse4xx() {
+        return httpResponse4xx;
     }
 
-    public int getHTTPResponse5xx() {
-        return HTTPResponse5xx;
+    public int getHttpResponse5xx() {
+        return httpResponse5xx;
     }
 
-    public int getHTTPResponseOther() {
-        return HTTPResponseOther;
+    public int getHttpResponseOther() {
+        return httpResponseOther;
     }
 
-    public String getHCDetails() {
-        return HCDetails;
+    public String getHealthcheckDetails() {
+        return healthcheckDetails;
     }
 
     public int getRequestsInLastSecond() {
@@ -766,12 +770,12 @@ public class HAProxyRecord {
         return agentCheckDuration;
     }
 
-    public String getHCDescription() {
-        return HCDescription;
+    public String getHealthcheckDescription() {
+        return healthcheckDescription;
     }
 
     public String getAgentCheckDescription() {
-        return AgentCheckDescription;
+        return agentCheckDescription;
     }
 
     public int getCheckRiseParameter() {
@@ -846,7 +850,7 @@ public class HAProxyRecord {
             try {
                 sb.append(f.getName()).append(" : ").append(f.get(this)).append(", ");
             } catch (IllegalAccessException e) {
-                e.printStackTrace();
+                logger.error(e.getLocalizedMessage());
             }
         }
         sb.append("}");
