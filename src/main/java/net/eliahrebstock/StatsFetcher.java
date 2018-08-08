@@ -1,6 +1,8 @@
 package net.eliahrebstock;
 
 import net.eliahrebstock.config.LoadBalancerConfig;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -15,6 +17,8 @@ import java.util.Base64;
  * stats page.
  */
 class StatsFetcher {
+
+    private static final Logger logger = LoggerFactory.getLogger(StatsFetcher.class);
 
     private URL statsURL;
 
@@ -41,7 +45,9 @@ class StatsFetcher {
         byte[] encoded = Base64.getEncoder().encode(userPassword.getBytes());
         String encodedString = new String(encoded);
         con.setRequestProperty("Authorization", "Basic " + encodedString);
+        logger.debug("HTTP request on {}.", statsURL);
         int responseCode = con.getResponseCode();
+        logger.debug("HTTP response from {} : {}.", statsURL, responseCode);
         if (responseCode == 200) {
             return con.getInputStream();
         } else {

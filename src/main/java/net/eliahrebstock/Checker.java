@@ -77,11 +77,12 @@ public class Checker implements Runnable {
      * @throws IOException if a connexion problem occurs.
      */
     private Map<String, List<BackendResult>> doCheck() throws IOException {
+        logger.info("Check for loadbalancers stats triggered.");
         List<String> proxies = Arrays.asList(config.getProxies());
-
         Map<String, List<BackendResult>> resultsMap = new HashMap<>();
 
         for (LoadBalancerConfig lbConfig : config.getLoadBalancerConfigs()) {
+            logger.info("Check on {} with {} started.", lbConfig.getEnvName(), lbConfig.getUrl());
             StatsFetcher statsFetcher = new StatsFetcher(lbConfig);
             InputStream is = statsFetcher.fetch();
             Iterable<CSVRecord> records = getRecords(is);
