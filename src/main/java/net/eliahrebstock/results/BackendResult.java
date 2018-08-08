@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 public class BackendResult {
 
     @JsonIgnore
-    private static Logger logger = LoggerFactory.getLogger(BackendResult.class);
+    private static final Logger logger = LoggerFactory.getLogger(BackendResult.class);
 
     /**
      * Name of a proxy (which contains multiple backends).
@@ -74,7 +74,7 @@ public class BackendResult {
         try {
             return mapper.writeValueAsString(this);
         } catch (JsonProcessingException e) {
-            logger.error(e.getLocalizedMessage());
+            logger.error(e.getLocalizedMessage(), e);
             return null;
         }
     }

@@ -850,7 +850,7 @@ public class HAProxyRecord {
             try {
                 sb.append(f.getName()).append(" : ").append(f.get(this)).append(", ");
             } catch (IllegalAccessException e) {
-                logger.error(e.getLocalizedMessage());
+                logger.error(e.getLocalizedMessage(), e);
             }
         }
         sb.append("}");

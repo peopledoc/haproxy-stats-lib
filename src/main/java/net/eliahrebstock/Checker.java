@@ -26,15 +26,15 @@ import java.util.concurrent.TimeUnit;
  * Checker used to poll statistics from HAProxy and converting part of it to JSON
  */
 public class Checker implements Runnable {
-    private Config config;
+    private final Config config;
 
-    private static Logger logger = LoggerFactory.getLogger(Checker.class);
+    private static final Logger logger = LoggerFactory.getLogger(Checker.class);
 
     private Map<String, List<BackendResult>> results;
 
-    private Cache<UUID, Map<String, List<BackendResult>>> cache;
+    private final Cache<UUID, Map<String, List<BackendResult>>> cache;
 
-    private UUID key;
+    private final UUID key;
 
     /**
      * Construct a new Checker with the given configuration file.
@@ -107,7 +107,7 @@ public class Checker implements Runnable {
         try {
             return cache.get(key, this::doCheck);
         } catch (ExecutionException e) {
-            logger.error(e.getLocalizedMessage());
+            logger.error(e.getLocalizedMessage(), e);
             return null;
         }
     }
@@ -149,7 +149,7 @@ public class Checker implements Runnable {
         try {
             return mapper.writeValueAsString(results);
         } catch (JsonProcessingException e) {
-            logger.error(e.getLocalizedMessage());
+            logger.error(e.getLocalizedMessage(), e);
             return null;
         }
     }
