@@ -1,0 +1,3 @@
+loadbalancers:
+  - name: prod
+    url: haproxy-stats.example.com

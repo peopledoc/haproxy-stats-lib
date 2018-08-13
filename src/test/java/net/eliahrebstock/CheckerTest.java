@@ -73,4 +73,26 @@ class CheckerTest {
             fail();
         }
     }
+
+    @Test
+    void emptyProxiesMainTest() {
+        Config emptyMainConfig = null;
+        try {
+            emptyMainConfig = Config.loadFromFile(ResourceLoader.getFile("empty_main_config.yml"));
+        } catch (YamlParseException e) {
+            e.printStackTrace();
+            fail();
+        }
+
+        Checker checker = new Checker(emptyMainConfig);
+
+        Map<String, List<BackendResult>> results = checker.check();
+        ObjectMapper mapper = new ObjectMapper();
+        try {
+            mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(results);
+        } catch (IOException e) {
+            e.printStackTrace();
+            fail();
+        }
+    }
 }

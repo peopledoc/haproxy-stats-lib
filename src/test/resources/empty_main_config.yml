@@ -1,0 +1,5 @@
+loadbalancers:
+  - name: integration
+    url: http://localhost:1936
+    username: integration
+    password: integration

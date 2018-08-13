@@ -6,9 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import static org.junit.jupiter.api.Assertions.assertArrayEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 /**
  * Unit test on loading configuration file.
@@ -34,5 +32,18 @@ class ConfigTest {
     void invalidParseTest() {
         File configFile = ResourceLoader.getFile("invalid_config.yml");
         assertThrows(YamlParseException.class, () -> Config.loadFromFile(configFile));
+    }
+
+    @Test
+    void emptyParseTest() {
+        File configFile = ResourceLoader.getFile("empty_config.yml");
+        Config config = null;
+        try {
+            config = Config.loadFromFile(configFile);
+        } catch (YamlParseException e) {
+            e.printStackTrace();
+            fail();
+        }
+        assertNull(config.getProxies());
     }
 }

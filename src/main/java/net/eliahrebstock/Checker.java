@@ -78,7 +78,12 @@ public class Checker implements Runnable {
      */
     private Map<String, List<BackendResult>> doCheck() throws IOException {
         logger.info("Check for loadbalancers stats triggered.");
-        List<String> proxies = Arrays.asList(config.getProxies());
+        List<String> proxies;
+        if (config.getProxies() == null) {
+            proxies = new ArrayList<>();
+        } else {
+            proxies = Arrays.asList(config.getProxies());
+        }
         Map<String, List<BackendResult>> resultsMap = new HashMap<>();
 
         for (LoadBalancerConfig lbConfig : config.getLoadBalancerConfigs()) {
@@ -89,7 +94,7 @@ public class Checker implements Runnable {
             List<BackendResult> resultList = new ArrayList<>();
             for (CSVRecord record : records) {
                 HAProxyRecord lbRecord = new HAProxyRecord(record);
-                if (lbRecord.getType() == HAProxyRecord.ProxyType.SERVER && proxies.contains(lbRecord.getProxyName())) {
+                if (lbRecord.getType() == HAProxyRecord.ProxyType.SERVER && (proxies.isEmpty() || proxies.contains(lbRecord.getProxyName()))) {
                     resultList.add(new BackendResult(lbRecord));
                 }
             }
