@@ -1,3 +1,5 @@
+environment: integration
+
 loadbalancers:
   - name: integration
     url: http://localhost:1936

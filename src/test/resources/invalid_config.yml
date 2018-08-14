@@ -1,3 +1,5 @@
+environment: example
+
 loadbalancers:
   - name: prod
     fqdn: haproxy-stats.example.com

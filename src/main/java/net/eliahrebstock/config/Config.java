@@ -26,6 +26,12 @@ public class Config {
     private String[] proxies;
 
     /**
+     * Environment (root of the result)
+     */
+    @JsonProperty
+    private String environment;
+
+    /**
      * Duration of the cache validity in seconds.
      */
     @JsonProperty("cache_period")
@@ -51,5 +57,9 @@ public class Config {
 
     public int getCachePeriod() {
         return cachePeriod;
+    }
+
+    public String getEnvironment() {
+        return environment;
     }
 }

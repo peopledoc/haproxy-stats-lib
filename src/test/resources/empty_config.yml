@@ -1,3 +1,5 @@
+environment: example
+
 loadbalancers:
-  - name: prod
+  - name: example-1
     url: haproxy-stats.example.com

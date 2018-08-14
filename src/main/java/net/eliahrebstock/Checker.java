@@ -71,16 +71,16 @@ public class Checker implements Runnable {
         return CSVFormat.RFC4180.withFirstRecordAsHeader().parse(in);
     }
 
-    private Map<HAProxyRecord, List<HAProxyRecord>> aggregateRecordsByProxyName(Iterable<CSVRecord> records, List<String> filteredProxies) {
-        Map<HAProxyRecord, List<HAProxyRecord>> proxyAggregate = new HashMap<>();
+    private Map<String, List<HAProxyRecord>> aggregateRecordsByProxyName(Iterable<CSVRecord> records, List<String> filteredProxies) {
+        Map<String, List<HAProxyRecord>> proxyAggregate = new HashMap<>();
         // We aggregate results by proxy name
         for (CSVRecord record : records) {
             HAProxyRecord lbRecord = new HAProxyRecord(record);
             if (lbRecord.getType() == HAProxyRecord.ProxyType.SERVER && (filteredProxies.isEmpty() || filteredProxies.contains(lbRecord.getProxyName()))) {
-                if (!proxyAggregate.containsKey(lbRecord)) {
-                    proxyAggregate.put(lbRecord, new ArrayList<>());
+                if (!proxyAggregate.containsKey(lbRecord.getProxyName())) {
+                    proxyAggregate.put(lbRecord.getProxyName(), new ArrayList<>());
                 }
-                proxyAggregate.get(lbRecord).add(lbRecord);
+                proxyAggregate.get(lbRecord.getProxyName()).add(lbRecord);
             }
         }
         return proxyAggregate;
@@ -106,6 +106,7 @@ public class Checker implements Runnable {
 
         List<String> proxies = getFilteredProxies();
         Map<String, List<ProxyResult>> resultsMap = new HashMap<>();
+        List<ProxyResult> resultList = new ArrayList<>();
 
         for (LoadBalancerConfig lbConfig : config.getLoadBalancerConfigs()) {
             logger.info("Check on {} with {} started.", lbConfig.getEnvName(), lbConfig.getUrl());
@@ -113,18 +114,13 @@ public class Checker implements Runnable {
             InputStream is = statsFetcher.fetch();
             Iterable<CSVRecord> records = getRecords(is);
 
-            Map<HAProxyRecord, List<HAProxyRecord>> proxyAggregate = aggregateRecordsByProxyName(records, proxies);
+            Map<String, List<HAProxyRecord>> proxyAggregate = aggregateRecordsByProxyName(records, proxies);
 
-            // Then we create the result data structure
-            List<ProxyResult> resultList = new ArrayList<>();
-
-            for (Map.Entry<HAProxyRecord, List<HAProxyRecord>> entry : proxyAggregate.entrySet()) {
-                resultList.add(new ProxyResult(entry.getKey(), entry.getValue()));
+            for (Map.Entry<String, List<HAProxyRecord>> entry : proxyAggregate.entrySet()) {
+                resultList.add(new ProxyResult(lbConfig.getEnvName(), entry.getKey(), entry.getValue()));
             }
-
-            resultsMap.put(lbConfig.getEnvName(), resultList);
         }
-
+        resultsMap.put(config.getEnvironment(), resultList);
         this.results = resultsMap;
         return resultsMap;
     }

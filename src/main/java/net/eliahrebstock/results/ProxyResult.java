@@ -19,8 +19,15 @@ public class ProxyResult {
     @JsonProperty
     private List<BackendResult> backends;
 
-    public ProxyResult(HAProxyRecord lbRecord, List<HAProxyRecord> backendsRecords) {
-        name = lbRecord.getProxyName();
+    /**
+     * Loadbalancer associated with the proxy
+     */
+    @JsonProperty
+    private String loadbalancer;
+
+    public ProxyResult(String loadbalancer, String proxyName, List<HAProxyRecord> backendsRecords) {
+        name = proxyName;
+        this.loadbalancer = loadbalancer;
         backends = new ArrayList<>();
         for (HAProxyRecord record : backendsRecords) {
             backends.add(new BackendResult(record));
