@@ -27,5 +27,5 @@ Contributing
 License
 -------
 
-TODO
+Apache License v2.0 - Copyright 2018 Eliah Rebstock
 
