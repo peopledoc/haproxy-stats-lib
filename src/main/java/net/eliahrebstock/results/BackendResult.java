@@ -19,12 +19,6 @@ public class BackendResult {
     private static final Logger logger = LoggerFactory.getLogger(BackendResult.class);
 
     /**
-     * Name of a proxy (which contains multiple backends).
-     */
-    @JsonProperty
-    private String name;
-
-    /**
      * Name of the backend in the proxy.
      */
     @JsonProperty
@@ -56,7 +50,6 @@ public class BackendResult {
             recordStatusString = hcStatus.toString();
             recordStatus = hcStatus.getStatus();
         }
-        this.name = record.getProxyName();
         this.backend = record.getServiceName();
         this.weight = record.getWeight();
         this.status = recordStatus;

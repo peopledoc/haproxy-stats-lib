@@ -4,7 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import fr.novapost.lib.test.ResourceLoader;
 import fr.novapost.lib.yaml.exception.YamlParseException;
 import net.eliahrebstock.config.Config;
-import net.eliahrebstock.results.BackendResult;
+import net.eliahrebstock.results.ProxyResult;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
@@ -30,7 +30,7 @@ class CheckerTest {
 
         Checker checker = new Checker(mainConfig);
 
-        Map<String, List<BackendResult>> results = checker.check();
+        Map<String, List<ProxyResult>> results = checker.check();
         ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(results);
@@ -86,7 +86,7 @@ class CheckerTest {
 
         Checker checker = new Checker(emptyMainConfig);
 
-        Map<String, List<BackendResult>> results = checker.check();
+        Map<String, List<ProxyResult>> results = checker.check();
         ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(results);

@@ -7,7 +7,7 @@ import com.google.common.cache.CacheBuilder;
 import fr.novapost.lib.yaml.exception.YamlParseException;
 import net.eliahrebstock.config.Config;
 import net.eliahrebstock.config.LoadBalancerConfig;
-import net.eliahrebstock.results.BackendResult;
+import net.eliahrebstock.results.ProxyResult;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
@@ -30,9 +30,9 @@ public class Checker implements Runnable {
 
     private static final Logger logger = LoggerFactory.getLogger(Checker.class);
 
-    private Map<String, List<BackendResult>> results;
+    private Map<String, List<ProxyResult>> results;
 
-    private final Cache<UUID, Map<String, List<BackendResult>>> cache;
+    private final Cache<UUID, Map<String, List<ProxyResult>>> cache;
 
     private final UUID key;
 
@@ -71,35 +71,60 @@ public class Checker implements Runnable {
         return CSVFormat.RFC4180.withFirstRecordAsHeader().parse(in);
     }
 
-    /**
-     * Check HAProxy stats and return a Map of results.
-     * @return Map<String, List<BackendResult>> Map between environnment names and List of backends results.
-     * @throws IOException if a connexion problem occurs.
-     */
-    private Map<String, List<BackendResult>> doCheck() throws IOException {
-        logger.info("Check for loadbalancers stats triggered.");
+    private Map<HAProxyRecord, List<HAProxyRecord>> aggregateRecordsByProxyName(Iterable<CSVRecord> records, List<String> filteredProxies) {
+        Map<HAProxyRecord, List<HAProxyRecord>> proxyAggregate = new HashMap<>();
+        // We aggregate results by proxy name
+        for (CSVRecord record : records) {
+            HAProxyRecord lbRecord = new HAProxyRecord(record);
+            if (lbRecord.getType() == HAProxyRecord.ProxyType.SERVER && (filteredProxies.isEmpty() || filteredProxies.contains(lbRecord.getProxyName()))) {
+                if (!proxyAggregate.containsKey(lbRecord)) {
+                    proxyAggregate.put(lbRecord, new ArrayList<>());
+                }
+                proxyAggregate.get(lbRecord).add(lbRecord);
+            }
+        }
+        return proxyAggregate;
+    }
+
+    private List<String> getFilteredProxies() {
         List<String> proxies;
         if (config.getProxies() == null) {
             proxies = new ArrayList<>();
         } else {
             proxies = Arrays.asList(config.getProxies());
         }
-        Map<String, List<BackendResult>> resultsMap = new HashMap<>();
+        return proxies;
+    }
+
+    /**
+     * Check HAProxy stats and return a Map of results.
+     * @return Map<String, List<BackendResult>> Map between environnment names and List of backends results.
+     * @throws IOException if a connexion problem occurs.
+     */
+    private Map<String, List<ProxyResult>> doCheck() throws IOException {
+        logger.info("Check for loadbalancers stats triggered.");
+
+        List<String> proxies = getFilteredProxies();
+        Map<String, List<ProxyResult>> resultsMap = new HashMap<>();
 
         for (LoadBalancerConfig lbConfig : config.getLoadBalancerConfigs()) {
             logger.info("Check on {} with {} started.", lbConfig.getEnvName(), lbConfig.getUrl());
             StatsFetcher statsFetcher = new StatsFetcher(lbConfig);
             InputStream is = statsFetcher.fetch();
             Iterable<CSVRecord> records = getRecords(is);
-            List<BackendResult> resultList = new ArrayList<>();
-            for (CSVRecord record : records) {
-                HAProxyRecord lbRecord = new HAProxyRecord(record);
-                if (lbRecord.getType() == HAProxyRecord.ProxyType.SERVER && (proxies.isEmpty() || proxies.contains(lbRecord.getProxyName()))) {
-                    resultList.add(new BackendResult(lbRecord));
-                }
+
+            Map<HAProxyRecord, List<HAProxyRecord>> proxyAggregate = aggregateRecordsByProxyName(records, proxies);
+
+            // Then we create the result data structure
+            List<ProxyResult> resultList = new ArrayList<>();
+
+            for (Map.Entry<HAProxyRecord, List<HAProxyRecord>> entry : proxyAggregate.entrySet()) {
+                resultList.add(new ProxyResult(entry.getKey(), entry.getValue()));
             }
+
             resultsMap.put(lbConfig.getEnvName(), resultList);
         }
+
         this.results = resultsMap;
         return resultsMap;
     }
@@ -109,7 +134,7 @@ public class Checker implements Runnable {
      * @return Map<String, List<BackendResult>> the results
      */
     @Nullable
-    public Map<String, List<BackendResult>> check() {
+    public Map<String, List<ProxyResult>> check() {
         try {
             return cache.get(key, this::doCheck);
         } catch (ExecutionException e) {
@@ -140,7 +165,7 @@ public class Checker implements Runnable {
      * Does not trigger a new fetch.
      * @return Map<String, List<BackendResult>> results
      */
-    public Map<String, List<BackendResult>> getLastResults() {
+    public Map<String, List<ProxyResult>> getLastResults() {
         return results;
     }
 
