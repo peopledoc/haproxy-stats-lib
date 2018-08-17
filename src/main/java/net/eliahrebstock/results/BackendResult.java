@@ -22,7 +22,7 @@ public class BackendResult {
      * Name of the backend in the proxy.
      */
     @JsonProperty
-    private String backend;
+    private String name;
 
     /**
      * Weight associated with the backend.
@@ -39,21 +39,21 @@ public class BackendResult {
     /**
      * Detailed HAProxy backend status information
      */
-    @JsonProperty(value = "hc_status")
-    private String healthCheckStatus;
+    @JsonProperty(value = "check_status")
+    private String pingStatus;
 
     public BackendResult(HAProxyRecord record) {
-        HAProxyRecord.HCStatus hcStatus = record.getCheckStatus();
+        HAProxyRecord.HCStatus recordCheckStatus = record.getCheckStatus();
         boolean recordStatus = false;
         String recordStatusString = "";
-        if (hcStatus != null) {
-            recordStatusString = hcStatus.toString();
-            recordStatus = hcStatus.getStatus();
+        if (recordCheckStatus != null) {
+            recordStatusString = recordCheckStatus.toString();
+            recordStatus = recordCheckStatus.getStatus();
         }
-        this.backend = record.getServiceName();
+        this.name = record.getServiceName();
         this.weight = record.getWeight();
         this.status = recordStatus;
-        this.healthCheckStatus = recordStatusString;
+        this.pingStatus = recordStatusString;
     }
 
     /**
