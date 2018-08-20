@@ -14,10 +14,10 @@ import java.util.Map;
 import static org.junit.jupiter.api.Assertions.fail;
 
 /**
- * Unit test for the Checker. These tests need the main_config.yml to be correct
+ * Unit test for the HAProxyChecker. These tests need the main_config.yml to be correct
  * and to have a proper connection to the load balancer.
  */
-class CheckerTest {
+class HAProxyCheckerTest {
     @Test
     void testMain() {
         Config mainConfig = null;
@@ -28,9 +28,9 @@ class CheckerTest {
             fail();
         }
 
-        Checker checker = new Checker(mainConfig);
+        HAProxyChecker haProxyChecker = new HAProxyChecker(mainConfig);
 
-        Map<String, List<ProxyResult>> results = checker.check();
+        Map<String, List<ProxyResult>> results = haProxyChecker.check();
         ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(results);
@@ -50,8 +50,8 @@ class CheckerTest {
             fail();
         }
 
-        Checker checker = new Checker(mainConfig);
-        Thread t = new Thread(checker);
+        HAProxyChecker haProxyChecker = new HAProxyChecker(mainConfig);
+        Thread t = new Thread(haProxyChecker);
         t.run();
 
         try {
@@ -61,13 +61,13 @@ class CheckerTest {
             fail();
         }
 
-        if (checker.getLastResults() == null) {
+        if (haProxyChecker.getLastResults() == null) {
             fail();
         }
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(checker.getLastResults());
+            mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(haProxyChecker.getLastResults());
         } catch (IOException e) {
             e.printStackTrace();
             fail();
@@ -84,9 +84,9 @@ class CheckerTest {
             fail();
         }
 
-        Checker checker = new Checker(emptyMainConfig);
+        HAProxyChecker haProxyChecker = new HAProxyChecker(emptyMainConfig);
 
-        Map<String, List<ProxyResult>> results = checker.check();
+        Map<String, List<ProxyResult>> results = haProxyChecker.check();
         ObjectMapper mapper = new ObjectMapper();
         try {
             mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(results);

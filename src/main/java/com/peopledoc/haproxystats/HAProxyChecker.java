@@ -25,10 +25,10 @@ import java.util.concurrent.TimeUnit;
 /**
  * Checker used to poll statistics from HAProxy and converting part of it to JSON
  */
-public class Checker implements Runnable {
+public class HAProxyChecker implements Runnable {
     private final Config config;
 
-    private static final Logger logger = LoggerFactory.getLogger(Checker.class);
+    private static final Logger logger = LoggerFactory.getLogger(HAProxyChecker.class);
 
     private Map<String, List<ProxyResult>> results;
 
@@ -37,19 +37,19 @@ public class Checker implements Runnable {
     private final UUID key;
 
     /**
-     * Construct a new Checker with the given configuration file.
+     * Construct a new HAProxyChecker with the given configuration file.
      * @param configFile File Main configuration file
      * @throws YamlParseException if the config file does not follow the format
      */
-    public Checker(File configFile) throws YamlParseException {
+    public HAProxyChecker(File configFile) throws YamlParseException {
         this(Config.loadFromFile(configFile));
     }
 
     /**
-     * Construct a new Checker with the given configuration.
+     * Construct a new HAProxyChecker with the given configuration.
      * @param config Config Main configuration
      */
-    public Checker(Config config) {
+    public HAProxyChecker(Config config) {
         this.config = config;
         key = UUID.randomUUID();
         cache = CacheBuilder.newBuilder().expireAfterWrite(config.getCachePeriod(), TimeUnit.SECONDS).build();
@@ -150,10 +150,10 @@ public class Checker implements Runnable {
             return;
         }
 
-        Checker checker = new Checker(new File(args[0]));
+        HAProxyChecker haProxyChecker = new HAProxyChecker(new File(args[0]));
 
-        checker.check();
-        logger.info(checker.getLastResultsAsJSON());
+        haProxyChecker.check();
+        logger.info(haProxyChecker.getLastResultsAsJSON());
     }
 
     /**
