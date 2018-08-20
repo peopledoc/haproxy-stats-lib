@@ -13,6 +13,17 @@ Key Features
 - Configurable with a YAML file.
 - Give back a JSON with some data in it.
 
+Maven usage
+-----------
+
+```
+<dependency>
+    <groupId>com.peopledoc</groupId>
+    <artifactId>haproxy-stats</artifactId>
+    <version>1.0.0</version>
+</dependency>
+```
+
 <!--
 Team
 ----

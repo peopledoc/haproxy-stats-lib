@@ -1,4 +1,4 @@
-package net.eliahrebstock;
+package com.peopledoc.haproxystats;
 
 import fr.novapost.lib.test.ResourceLoader;
 import org.apache.commons.csv.CSVFormat;

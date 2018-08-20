@@ -1,13 +1,13 @@
-package net.eliahrebstock;
+package com.peopledoc.haproxystats;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
+import com.peopledoc.haproxystats.config.LoadBalancerConfig;
 import fr.novapost.lib.yaml.exception.YamlParseException;
-import net.eliahrebstock.config.Config;
-import net.eliahrebstock.config.LoadBalancerConfig;
-import net.eliahrebstock.results.ProxyResult;
+import com.peopledoc.haproxystats.config.Config;
+import com.peopledoc.haproxystats.results.ProxyResult;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;

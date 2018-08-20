@@ -1,4 +1,4 @@
-package net.eliahrebstock.config;
+package com.peopledoc.haproxystats.config;
 
 import fr.novapost.lib.test.ResourceLoader;
 import fr.novapost.lib.yaml.exception.YamlParseException;

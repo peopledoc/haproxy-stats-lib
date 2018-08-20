@@ -1,6 +1,6 @@
-package net.eliahrebstock;
+package com.peopledoc.haproxystats;
 
-import net.eliahrebstock.config.LoadBalancerConfig;
+import com.peopledoc.haproxystats.config.LoadBalancerConfig;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

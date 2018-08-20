@@ -1,7 +1,7 @@
-package net.eliahrebstock.results;
+package com.peopledoc.haproxystats.results;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
-import net.eliahrebstock.HAProxyRecord;
+import com.peopledoc.haproxystats.HAProxyRecord;
 
 import java.util.ArrayList;
 import java.util.List;

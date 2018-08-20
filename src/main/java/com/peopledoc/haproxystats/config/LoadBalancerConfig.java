@@ -1,4 +1,4 @@
-package net.eliahrebstock.config;
+package com.peopledoc.haproxystats.config;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 

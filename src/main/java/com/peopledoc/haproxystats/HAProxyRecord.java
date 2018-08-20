@@ -1,4 +1,4 @@
-package net.eliahrebstock;
+package com.peopledoc.haproxystats;
 
 
 import org.apache.commons.csv.CSVRecord;

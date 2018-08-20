@@ -1,10 +1,10 @@
-package net.eliahrebstock.results;
+package com.peopledoc.haproxystats.results;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import net.eliahrebstock.HAProxyRecord;
+import com.peopledoc.haproxystats.HAProxyRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

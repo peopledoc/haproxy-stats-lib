@@ -1,10 +1,10 @@
-package net.eliahrebstock;
+package com.peopledoc.haproxystats;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.peopledoc.haproxystats.config.Config;
+import com.peopledoc.haproxystats.results.ProxyResult;
 import fr.novapost.lib.test.ResourceLoader;
 import fr.novapost.lib.yaml.exception.YamlParseException;
-import net.eliahrebstock.config.Config;
-import net.eliahrebstock.results.ProxyResult;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
