@@ -37,12 +37,6 @@ public class BackendResult {
     private Boolean available;
 
     /**
-     * Detailed HAProxy backend status information
-     */
-    @JsonProperty(value = "check_status")
-    private String pingStatus;
-
-    /**
      * Status of the backend considering the availability and the associated weight.
      * if weight > 0 and the backend is available, the status is "OK"
      * else if weight > 0 and the backend is not available, the status is "KO"
@@ -54,15 +48,12 @@ public class BackendResult {
     public BackendResult(HAProxyRecord record) {
         HAProxyRecord.HCStatus recordCheckStatus = record.getCheckStatus();
         boolean recordStatus = false;
-        String recordStatusString = "";
         if (recordCheckStatus != null) {
-            recordStatusString = recordCheckStatus.toString();
             recordStatus = recordCheckStatus.getStatus();
         }
         this.name = record.getServiceName();
         this.weight = record.getWeight();
         this.available = recordStatus;
-        this.pingStatus = recordStatusString;
 
         if (weight > 0 && available) {
             status = "OK";
