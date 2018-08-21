@@ -162,6 +162,7 @@ public class HAProxyChecker implements Runnable {
      * @return Map<String, List<BackendResult>> results
      */
     public Map<String, List<ProxyResult>> getLastResults() {
+        check();
         return results;
     }
 
@@ -172,6 +173,7 @@ public class HAProxyChecker implements Runnable {
      */
     @Nullable
     public String getLastResultsAsJSON() {
+        check();
         ObjectMapper mapper = new ObjectMapper();
         try {
             return mapper.writeValueAsString(results);
