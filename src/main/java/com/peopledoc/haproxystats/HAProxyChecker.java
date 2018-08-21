@@ -4,16 +4,15 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.cache.Cache;
 import com.google.common.cache.CacheBuilder;
-import com.peopledoc.haproxystats.config.LoadBalancerConfig;
-import fr.novapost.lib.yaml.exception.YamlParseException;
 import com.peopledoc.haproxystats.config.Config;
+import com.peopledoc.haproxystats.config.LoadBalancerConfig;
 import com.peopledoc.haproxystats.results.ProxyResult;
+import fr.novapost.lib.yaml.exception.YamlParseException;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.annotation.Nullable;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -127,15 +126,14 @@ public class HAProxyChecker implements Runnable {
 
     /**
      * Return cached results from HAProxy or trigger a new check if the cache is expired.
-     * @return Map<String, List<BackendResult>> the results
+     * @return Optional<Map<String, List<BackendResult>>> the results
      */
-    @Nullable
-    public Map<String, List<ProxyResult>> check() {
+    public Optional<Map<String, List<ProxyResult>>> check() {
         try {
-            return cache.get(key, this::doCheck);
+            return Optional.of(cache.get(key, this::doCheck));
         } catch (ExecutionException e) {
             logger.error(e.getLocalizedMessage(), e);
-            return null;
+            return Optional.empty();
         }
     }
 
@@ -153,7 +151,8 @@ public class HAProxyChecker implements Runnable {
         HAProxyChecker haProxyChecker = new HAProxyChecker(new File(args[0]));
 
         haProxyChecker.check();
-        logger.info(haProxyChecker.getLastResultsAsJSON());
+        Optional<String> result = haProxyChecker.getLastResultsAsJSON();
+        result.ifPresent(logger::info);
     }
 
     /**
@@ -161,9 +160,12 @@ public class HAProxyChecker implements Runnable {
      * Does not trigger a new fetch.
      * @return Map<String, List<BackendResult>> results
      */
-    public Map<String, List<ProxyResult>> getLastResults() {
+    public Optional<Map<String, List<ProxyResult>>> getLastResults() {
         check();
-        return results;
+        if (results == null) {
+            return Optional.empty();
+        }
+        return Optional.of(results);
     }
 
     /**
@@ -171,15 +173,20 @@ public class HAProxyChecker implements Runnable {
      * Does not trigger a new fetch.
      * @return String JSON results.
      */
-    @Nullable
-    public String getLastResultsAsJSON() {
+    public Optional<String> getLastResultsAsJSON() {
         check();
+
+        if (results == null) {
+            return Optional.empty();
+        }
+
         ObjectMapper mapper = new ObjectMapper();
+
         try {
-            return mapper.writeValueAsString(results);
+            return Optional.of(mapper.writeValueAsString(results));
         } catch (JsonProcessingException e) {
             logger.error(e.getLocalizedMessage(), e);
-            return null;
+            return Optional.empty();
         }
     }
 

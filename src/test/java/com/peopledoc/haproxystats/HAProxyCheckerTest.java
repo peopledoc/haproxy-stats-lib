@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.fail;
 
@@ -30,10 +31,12 @@ class HAProxyCheckerTest {
 
         HAProxyChecker haProxyChecker = new HAProxyChecker(mainConfig);
 
-        Map<String, List<ProxyResult>> results = haProxyChecker.check();
+        Optional<Map<String, List<ProxyResult>>> results = haProxyChecker.check();
         ObjectMapper mapper = new ObjectMapper();
         try {
-            mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(results);
+            if (results.isPresent()) {
+                mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(results.get());
+            }
         } catch (IOException e) {
             e.printStackTrace();
             fail();
@@ -61,13 +64,16 @@ class HAProxyCheckerTest {
             fail();
         }
 
-        if (haProxyChecker.getLastResults() == null) {
+        if (!haProxyChecker.getLastResults().isPresent()) {
             fail();
         }
 
         ObjectMapper mapper = new ObjectMapper();
         try {
-            mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(haProxyChecker.getLastResults());
+            Optional<Map<String, List<ProxyResult>>> results = haProxyChecker.getLastResults();
+            if (results.isPresent()) {
+                mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(results);
+            }
         } catch (IOException e) {
             e.printStackTrace();
             fail();
@@ -86,10 +92,12 @@ class HAProxyCheckerTest {
 
         HAProxyChecker haProxyChecker = new HAProxyChecker(emptyMainConfig);
 
-        Map<String, List<ProxyResult>> results = haProxyChecker.check();
+        Optional<Map<String, List<ProxyResult>>> results = haProxyChecker.check();
         ObjectMapper mapper = new ObjectMapper();
         try {
-            mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(results);
+            if (results.isPresent()) {
+                mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(results.get());
+            }
         } catch (IOException e) {
             e.printStackTrace();
             fail();
