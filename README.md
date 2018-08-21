@@ -20,7 +20,7 @@ Maven usage
 <dependency>
     <groupId>com.peopledoc</groupId>
     <artifactId>haproxy-stats</artifactId>
-    <version>1.0.0</version>
+    <version>1.2.0</version>
 </dependency>
 ```
 
