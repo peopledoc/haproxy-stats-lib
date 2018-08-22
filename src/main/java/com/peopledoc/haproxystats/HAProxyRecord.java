@@ -14,7 +14,7 @@ import java.time.Duration;
  */
 public class HAProxyRecord {
 
-    private static Logger logger = LoggerFactory.getLogger(HAProxyRecord.class);
+    private static final Logger logger = LoggerFactory.getLogger(HAProxyRecord.class);
 
     enum ProxyType {
         FRONTEND,
@@ -69,253 +69,253 @@ public class HAProxyRecord {
     }
 
     /* pxname */
-    private String proxyName;
+    private final String proxyName;
 
     /* svname */
-    private String serviceName;
+    private final String serviceName;
 
     /* qcur */
-    private int currentQueuedRequests;
+    private final int currentQueuedRequests;
 
     /* qmax */
-    private int maxQueuedRequests;
+    private final int maxQueuedRequests;
 
     /* scur */
-    private int currentSessions;
+    private final int currentSessions;
 
     /* smax */
-    private int maxSessions;
+    private final int maxSessions;
 
     /* slim */
-    private int configuredSessionLimit;
+    private final int configuredSessionLimit;
 
     /* stot */
-    private int cumulativeSessionNumber;
+    private final int cumulativeSessionNumber;
 
     /* bin */
-    private int bytesIn;
+    private final int bytesIn;
 
     /* bout */
-    private int bytesOut;
+    private final int bytesOut;
 
     /* dreq */
-    private int deniedRequests;
+    private final int deniedRequests;
 
     /* dresp */
-    private int deniedResponses;
+    private final int deniedResponses;
 
     /* ereq */
-    private int requestErrors;
+    private final int requestErrors;
 
     /* econ */
-    private int connectErrors;
+    private final int connectErrors;
 
     /* eresp */
-    private int responseErrors;
+    private final int responseErrors;
 
     /* wretr */
-    private int retriedServerConnectsInRequest;
+    private final int retriedServerConnectsInRequest;
 
     /* wredis */
-    private int redispatchedConnectsInRequest;
+    private final int redispatchedConnectsInRequest;
 
     /* status */
-    private String status;
+    private final String status;
 
     /* weight */
-    private int weight;
+    private final int weight;
 
     /* act */
-    private int activeServers;
+    private final int activeServers;
 
     /* bck */
-    private int backupServers;
+    private final int backupServers;
 
     /* chkfail */
-    private int checkFailedNumber;
+    private final int checkFailedNumber;
 
     /* chkdown */
-    private int checkDownNumber;
+    private final int checkDownNumber;
 
     /* lastchg */
-    private Duration lastStatusChange;
+    private final Duration lastStatusChange;
 
     /* downtime */
-    private Duration downtime;
+    private final Duration downtime;
 
     /* qlimit */
-    private int configuredMaxQueue;
+    private final int configuredMaxQueue;
 
     /* pid */
-    private int processID;
+    private final int processID;
 
     /* iid */
-    private int proxyID;
+    private final int proxyID;
 
     /* sid */
-    private int serverID;
+    private final int serverID;
 
     /* throttle */
-    private int throttlePercentage;
+    private final int throttlePercentage;
 
     /* lbtot */
-    private int totalSelected;
+    private final int totalSelected;
 
     /* tracked */
-    private int trackID;
+    private final int trackID;
 
     /* type */
-    private ProxyType type;
+    private final ProxyType type;
 
     /* rate */
-    private int sessionsInLastSecond;
+    private final int sessionsInLastSecond;
 
     /* rate_lim */
-    private int sessionsPerSecondLimit;
+    private final int sessionsPerSecondLimit;
 
     /* rate_max */
-    private int maxSessionsPerSecond;
+    private final int maxSessionsPerSecond;
 
     /* check_status */
-    private HCStatus checkStatus;
+    private final HCStatus checkStatus;
 
     /* check_code */
-    private int checkCode;
+    private final int checkCode;
 
     /* check_duration */
-    private Duration checkDuration;
+    private final Duration checkDuration;
 
     /* hrsp_1xx */
-    private int httpResponse1xx;
+    private final int httpResponse1xx;
 
     /* hrsp_2xx */
-    private int httpResponse2xx;
+    private final int httpResponse2xx;
 
     /* hrsp_3xx */
-    private int httpResponse3xx;
+    private final int httpResponse3xx;
 
     /* hrsp_4xx */
-    private int httpResponse4xx;
+    private final int httpResponse4xx;
 
     /* hrsp_5xx */
-    private int httpResponse5xx;
+    private final int httpResponse5xx;
 
     /* hrsp_other */
-    private int httpResponseOther;
+    private final int httpResponseOther;
 
     /* hanafail */
-    private String healthcheckDetails;
+    private final String healthcheckDetails;
 
     /* req_rate */
-    private int requestsInLastSecond;
+    private final int requestsInLastSecond;
 
     /* req_rate_max */
-    private int requestsPerSecondLimit;
+    private final int requestsPerSecondLimit;
 
     /* req_tot */
-    private int maxRequestsPerSecond;
+    private final int maxRequestsPerSecond;
 
     /* cli_abrt */
-    private int clientAborts;
+    private final int clientAborts;
 
     /* srv_abrt */
-    private int serverAborts;
+    private final int serverAborts;
 
     /* comp_in */
-    private int compressorBytesIn;
+    private final int compressorBytesIn;
 
     /* comp_out */
-    private int compressorBytesOut;
+    private final int compressorBytesOut;
 
     /* comp_byp */
-    private int compressorBytesBypassed;
+    private final int compressorBytesBypassed;
 
     /* comp_rsp */
-    private int compressedResponses;
+    private final int compressedResponses;
 
     /* lastsess */
-    private int timeSinceLastSession;
+    private final int timeSinceLastSession;
 
     /* last_chk */
-    private String lastHCContents;
+    private final String lastHCContents;
 
     /* last_agt */
-    private String lastAgentCheckContents;
+    private final String lastAgentCheckContents;
 
     /* qtime */
-    private Duration averageQueueTime1024LastRequests;
+    private final Duration averageQueueTime1024LastRequests;
 
     /* ctime */
-    private Duration averageConnectTime1024LastRequests;
+    private final Duration averageConnectTime1024LastRequests;
 
     /* rtime */
-    private Duration averageResponseTime1024LastRequests;
+    private final Duration averageResponseTime1024LastRequests;
 
     /* ttime */
-    private Duration averageTotalSessionTime1024LastRequests;
+    private final Duration averageTotalSessionTime1024LastRequests;
 
     /* agent_status */
-    private AgentStatus agentStatus;
+    private final AgentStatus agentStatus;
 
     /* agent_code (unused per doc) */
-    private int agentCode;
+    private final int agentCode;
 
     /* agent_duration */
-    private Duration agentCheckDuration;
+    private final Duration agentCheckDuration;
 
     /* check_desc */
-    private String healthcheckDescription;
+    private final String healthcheckDescription;
 
     /* agent_desc */
-    private String agentCheckDescription;
+    private final String agentCheckDescription;
 
     /* check_rise */
-    private int checkRiseParameter;
+    private final int checkRiseParameter;
 
     /* check_fall */
-    private int checkFallParameter;
+    private final int checkFallParameter;
 
     /* check_health */
-    private int checkHealthResult;
+    private final int checkHealthResult;
 
     /* agent_rise */
-    private int agentRiseParameter;
+    private final int agentRiseParameter;
 
     /* agent_fall */
-    private int agentFallParameter;
+    private final int agentFallParameter;
 
     /* agent_health */
-    private int agentHealthResult;
+    private final int agentHealthResult;
 
     /* addr */
-    private String address;
+    private final String address;
 
     /* cookie */
-    private String cookie;
+    private final String cookie;
 
     /* mode */
-    private ProxyMode mode;
+    private final ProxyMode mode;
 
     /* algo */
-    private String loadBalancingAlgorithm;
+    private final String loadBalancingAlgorithm;
 
     /* conn_rate */
-    private int connectionsInLastSecond;
+    private final int connectionsInLastSecond;
 
     /* conn_rate_max */
-    private int maxConnectionPerSecond;
+    private final int maxConnectionPerSecond;
 
     /* conn_tot */
-    private int totalConnections;
+    private final int totalConnections;
 
     /* intercepted */
-    private int interceptedConnections;
+    private final int interceptedConnections;
 
     /* dcon */
-    private int deniedRequestsTCPConnection;
+    private final int deniedRequestsTCPConnection;
 
     /* dses */
-    private int deniedRequestsTCPSession;
+    private final int deniedRequestsTCPSession;
 
     private ProxyType getProxyTypeFromString(String proxyType) {
         int proxyTypeNumber = Integer.parseInt(proxyType);

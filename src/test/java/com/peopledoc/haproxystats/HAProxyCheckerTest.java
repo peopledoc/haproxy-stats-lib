@@ -64,15 +64,13 @@ class HAProxyCheckerTest {
             fail();
         }
 
-        if (!haProxyChecker.getLastResults().isPresent()) {
-            fail();
-        }
-
         ObjectMapper mapper = new ObjectMapper();
         try {
             Optional<Map<String, List<ProxyResult>>> results = haProxyChecker.getLastResults();
             if (results.isPresent()) {
-                mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(results);
+                mapper.getFactory().createGenerator(System.out).useDefaultPrettyPrinter().writeObject(results.get());
+            } else {
+                fail();
             }
         } catch (IOException e) {
             e.printStackTrace();
