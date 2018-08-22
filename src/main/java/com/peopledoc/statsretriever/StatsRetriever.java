@@ -21,7 +21,7 @@ public class StatsRetriever {
 
     private List<JSONStatsFetcher> fetchers;
 
-    private static final Integer THREAD_COUNT = 20;
+    private static final Integer THREAD_COUNT = 7;
 
     private final ExecutorService pool;
 

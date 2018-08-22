@@ -13,11 +13,13 @@ import java.nio.charset.StandardCharsets;
 public abstract class Fetcher {
     private static final Logger logger = LoggerFactory.getLogger(Fetcher.class);
 
+    private static final int TIMEOUT = 10000;
+
     protected HttpURLConnection createGETConnection(URL url) throws IOException {
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
-        con.setConnectTimeout(5000);
-        con.setReadTimeout(5000);
+        con.setConnectTimeout(TIMEOUT);
+        con.setReadTimeout(TIMEOUT);
         return con;
     }
 
