@@ -20,7 +20,7 @@ Maven usage
 <dependency>
     <groupId>com.peopledoc</groupId>
     <artifactId>haproxy-stats</artifactId>
-    <version>1.3.0</version>
+    <version>1.3.2</version>
 </dependency>
 ```
 
@@ -28,7 +28,7 @@ Classes to use
 --------------
 
 * `com.peopledoc.haproxystats.HAProxyChecker` to check HAProxy stats.
-* `com.peopledoc.statsretriever.StatsRetriever` to collect results from multiple servers providing results 
+* `com.peopledoc.statsretriever.StatsRetriever` to collect results from multiple servers providing results
   from `HAProxyChecker`.
 
 Config file format (verbose)
