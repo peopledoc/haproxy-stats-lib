@@ -96,5 +96,4 @@ Contributing
 License
 -------
 
-Apache License v2.0 - Copyright 2018 Eliah Rebstock
-
+Apache License v2.0 - © 2018 PeopleDoc
